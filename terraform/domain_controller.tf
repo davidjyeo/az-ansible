@@ -89,5 +89,5 @@ module "dc01" {
     version = "latest"
   }
 
-  tags = local.common.tags
+  # tags = local.common.tags
 }

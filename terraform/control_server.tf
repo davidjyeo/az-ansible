@@ -119,6 +119,6 @@ module "control" {
   #   version   = "latest"
   # }
 
-  tags = local.common.tags
+  # tags = local.common.tags
 
 }
