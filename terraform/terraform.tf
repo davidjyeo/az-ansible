@@ -30,20 +30,12 @@ terraform {
   }
 
   backend "azurerm" {
-    # resource_group_name  = env.ARM_RESOURCE_GROUP_NAME
-    # storage_account_name = env.ARM_STORAGE_ACCOUNT_NAME
-    # container_name       = env.ARM_CONTAINER_NAME
-    # key                  = env.ARM_STATE_KEY
-    use_oidc = true
+    resource_group_name  = "uks-poc-tfrm-01-rg"
+    storage_account_name = "ukspoctfrm01strgacc"
+    container_name       = "tfstate"
+    key                  = "ansible.terraform.tfstate"
+    use_oidc             = true
   }
-
-  # backend "azurerm" {
-  #   resource_group_name  = var.TFSTATE_RESOURCE_GROUP
-  #   storage_account_name = var.TFSTATE_STORAGE_ACCOUNT
-  #   container_name       = var.TFSTATE_CONTAINER
-  #   key                  = var.TFSTATE_KEY
-  #   use_oidc             = true
-  # }
 }
 
 provider "azurerm" {
