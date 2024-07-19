@@ -7,11 +7,10 @@ module "control" {
   disable_password_authentication    = false
   location                           = azurerm_resource_group.rg.location
   name                               = "control"
-
-  resource_group_name     = azurerm_resource_group.rg.name
-  virtualmachine_os_type  = "Linux"
-  virtualmachine_sku_size = "Standard_B2as_v2"
-  zone                    = null
+  resource_group_name                = azurerm_resource_group.rg.name
+  os_type                            = "Linux"
+  sku_size                           = "Standard_B2as_v2"
+  zone                               = null
 
   # admin_ssh_keys = [
   #   {

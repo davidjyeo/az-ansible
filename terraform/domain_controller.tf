@@ -7,8 +7,8 @@ module "dc01" {
   location                           = azurerm_resource_group.rg.location
   name                               = "vmansadvuks01"
   resource_group_name                = azurerm_resource_group.rg.name
-  virtualmachine_os_type             = "Windows"
-  virtualmachine_sku_size            = "Standard_B2as_v2"
+  os_type                            = "Windows"
+  sku_size                           = "Standard_B2as_v2"
   zone                               = null
 
   managed_identities = {
