@@ -191,7 +191,7 @@ resource "azurerm_firewall_nat_rule_collection" "nat_rule_collection" {
   ]
 }
 
-resource "azurerm_firewall_network_rule_collection" "example" {
+resource "azurerm_firewall_network_rule_collection" "network_rule_collection_outboud_all" {
   name                = module.naming.firewall_network_rule_collection.name
   azure_firewall_name = azurerm_firewall.azfw.name
   resource_group_name = azurerm_resource_group.rg.name
