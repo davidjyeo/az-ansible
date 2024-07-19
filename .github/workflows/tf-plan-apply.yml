@@ -13,6 +13,7 @@ on:
         description: 'Trigger Terraform destroy'
         required: false
         default: 'false'
+  
 
 permissions:
   id-token: write
@@ -27,9 +28,12 @@ env:
 
 jobs:
   terraform-plan:
+    
     name: 'Terraform Plan'
     runs-on: ubuntu-latest
     if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.destroy != 'true' }}
+    
+    environment: UKADV
 
     env:
       ARM_SKIP_PROVIDER_REGISTRATION: true
