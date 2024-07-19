@@ -114,10 +114,11 @@ resource "azurerm_firewall_policy" "azfw" {
 }
 
 resource "azurerm_route_table" "rt" {
-  name                          = module.naming.route_table.name
-  location                      = azurerm_resource_group.rg.location
-  resource_group_name           = azurerm_resource_group.rg.name
-  disable_bgp_route_propagation = false
+  name                = module.naming.route_table.name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  # disable_bgp_route_propagation = false
+  bgp_route_propagation_enabled = true
   route {
     name                   = module.naming.route.name
     address_prefix         = "0.0.0.0/0"
