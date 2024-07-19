@@ -99,6 +99,7 @@ resource "azurerm_firewall" "azfw" {
   resource_group_name = azurerm_resource_group.rg.name
   sku_name            = "AZFW_VNet"
   sku_tier            = "Standard"
+  threat_intel_mode   = "Deny"
   ip_configuration {
     name                 = module.naming.firewall_ip_configuration.name
     subnet_id            = azurerm_subnet.firewall_subnet.id
