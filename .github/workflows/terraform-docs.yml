@@ -1,0 +1,26 @@
+name: 'Terraform Docs'
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+env:
+  TF_WORKING_DIR: ./terraform
+
+jobs:
+  docs: 
+    name: 'Terraform-Docs'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: terraform-docs/gh-actions@v1.2.0
+      with:
+        working-dir: ${{ env.TF_WORKING_DIR }}
+        output-file: TERRAFORM-DOCS.md
+        output-method: inject
+        git-push: true

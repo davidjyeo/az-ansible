@@ -1,0 +1,52 @@
+name: Checkov Compliance Scan
+
+on:
+  # push:
+  #   branches:
+  #   - main
+
+  workflow_dispatch:
+
+env:
+  TF_WORKING_DIR: ./terraform
+
+jobs:
+  checkov:
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Checkov
+        run: pip install checkov
+
+      - name: Checkov Scan
+        run: | 
+          checkov --directory ${{ env.TF_WORKING_DIR }} \
+          --output sarif \
+          --output-file-path . \
+          --framework terraform \
+          --soft-fail \
+          --download-external-modules true \
+          --output-file-path console,results.sarif
+          
+         
+          # --config_file: centralCheckov/.checkov.yml # This is a reference to the Configuration file with custom checks
+          # # This will add both a CLI output to the console and create a results.sarif file
+          # output_format: cli,sarif
+          # output_file_path: console,results.sarif
+   
+      # - name: Display Checkov Results
+      #   if: success()
+      #   run: |
+      #     echo "### Checkov Scan Results"
+      #     cat results.sarif
+
+      # - name: Add Checkov Summary
+      #   run: echo 'results.sarif' >> $GITHUB_STEP_SUMMARY
