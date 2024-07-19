@@ -69,7 +69,13 @@ jobs:
 
     - name: Terraform Init
       working-directory: ${{ env.TF_WORKING_DIR }}
-      run: terraform init
+      run: |
+        terraform init \
+          -backend-config="resource_group_name=${TFSTATE_RESOURCE_GROUP}" \
+          -backend-config="storage_account_name=${TFSTATE_STORAGE_ACCOUNT}" \
+          -backend-config="container_name=${TFSTATE_CONTAINER}" \
+          -backend-config="key=${TFSTATE_KEY}" \
+          -backend-config="use_oidc=true"
 
     - name: Terraform Format
       working-directory: ${{ env.TF_WORKING_DIR }}

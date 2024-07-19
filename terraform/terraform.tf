@@ -30,11 +30,11 @@ terraform {
   }
 
   backend "azurerm" {
-    resource_group_name  = env.ARM_RESOURCE_GROUP_NAME
-    storage_account_name = env.ARM_STORAGE_ACCOUNT_NAME
-    container_name       = env.ARM_CONTAINER_NAME
-    key                  = env.ARM_STATE_KEY
-    use_oidc             = true
+    # resource_group_name  = env.ARM_RESOURCE_GROUP_NAME
+    # storage_account_name = env.ARM_STORAGE_ACCOUNT_NAME
+    # container_name       = env.ARM_CONTAINER_NAME
+    # key                  = env.ARM_STATE_KEY
+    use_oidc = true
   }
 
   # backend "azurerm" {
