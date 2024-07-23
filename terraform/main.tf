@@ -1,11 +1,5 @@
 ### grant Key Vault Data Access Administrator to the SPN
 
-# This allows us to randomize the region for the resource group.
-# resource "random_integer" "region_index" {
-#   max = length(module.regions.regions) - 1
-#   min = 0
-# }
-
 resource "azurerm_resource_group" "rg" {
   name     = module.naming.resource_group.name
   location = "UK South"
@@ -194,7 +188,7 @@ resource "azurerm_firewall_nat_rule_collection" "nat_rule_collection" {
   }
 
   depends_on = [
-    module.dc01,
+    # module.dc01,
     module.control
   ]
 }
