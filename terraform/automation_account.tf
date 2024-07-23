@@ -24,7 +24,7 @@ resource "azurerm_automation_module" "example" {
 }
 
 resource "azurerm_automation_dsc_configuration" "domain" {
-  name                    = "domain_controller"
+  name                    = "dc01"
   resource_group_name     = azurerm_resource_group.rg.name
   automation_account_name = azurerm_automation_account.aa.name
   location                = azurerm_resource_group.rg.location
