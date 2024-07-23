@@ -45,13 +45,13 @@ module "avm-res-keyvault-vault" {
   enabled_for_template_deployment = true
   purge_protection_enabled        = true
   sku_name                        = "standard"
-  public_network_access_enabled   = false
+  public_network_access_enabled   = true
 
   network_acls = {
     bypass = "AzureServices"
-    ip_rules = [
-      jsondecode(data.http.my_ip.response_body).ip
-    ]
+    # ip_rules = [
+    #   jsondecode(data.http.my_ip.response_body).ip
+    # ]
   }
 
   keys = {
