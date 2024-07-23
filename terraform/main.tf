@@ -44,20 +44,38 @@ module "avm-res-keyvault-vault" {
   }
 
   secrets = {
-    linux-ssh-private-key = {
-      name = "linux-ssh-private-key"
+    azureuser-ssh-private-key = {
+      name = "azureuser-ssh-private-key"
     }
+    # azureuser-ssh-public-key = {
+    #   name = "azureuser-ssh-public-key"
+    # }
   }
   secrets_value = {
-    linux-ssh-private-key = azapi_resource_action.ssh_public_key_gen.output.privateKey
+    azureuser-ssh-private-key = tls_private_key.this.private_key_pem
+    # azureuser-ssh-public-key  = tls_private_key.this.public_key_openssh
   }
 
   role_assignments = {
-    deployment_user_kv_admin = {
-      role_definition_id_or_name = "Key Vault Administrator"
+    deployment_user_secrets = { #give the deployment user access to secrets
+      role_definition_id_or_name = "Key Vault Secrets Officer"
       principal_id               = data.azurerm_client_config.current.object_id
     }
+    deployment_user_keys = { #give the deployment user access to keys
+      role_definition_id_or_name = "Key Vault Crypto Officer"
+      principal_id               = data.azurerm_client_config.current.object_id
+    }
+    user_managed_identity_keys = { #give the user assigned managed identity for the disk encryption set access to keys
+      role_definition_id_or_name = "Key Vault Crypto Officer"
+      principal_id               = azurerm_user_assigned_identity.example_identity.principal_id
+      principal_type             = "ServicePrincipal"
+    }
   }
+
+  wait_for_rbac_before_key_operations = {
+    create = "60s"
+  }
+
   wait_for_rbac_before_secret_operations = {
     create = "60s"
   }
