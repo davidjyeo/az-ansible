@@ -1,14 +1,13 @@
 # This allows us to randomize the region for the resource group.
-resource "random_integer" "region_index" {
-  max = length(module.regions.regions) - 1
-  min = 0
-}
+# resource "random_integer" "region_index" {
+#   max = length(module.regions.regions) - 1
+#   min = 0
+# }
 
 resource "azurerm_resource_group" "rg" {
   name     = module.naming.resource_group.name
-  location = module.regions.regions[random_integer.region_index.result].name
-  # location = "UK South"
-
+  location = "UK South"
+  # location = module.regions.regions[random_integer.region_index.result].name
   # tags = local.common.tags
 
 }
@@ -41,6 +40,8 @@ module "avm-res-keyvault-vault" {
     bypass = "AzureServices"
   }
   purge_protection_enabled = false
+
+  sku_name = "standard"
 
   # wait_for_rbac_before_contact_operations = 30
   # wait_for_rbac_before_key_operations     = 30
