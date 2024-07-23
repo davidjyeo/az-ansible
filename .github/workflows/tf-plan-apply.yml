@@ -34,7 +34,8 @@ jobs:
   terraform-plan:
     name: "Terraform Plan"
     runs-on: ubuntu-latest
-    if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.destroy != 'true' }}
+    # if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.destroy != 'true' }}
+    if: ${{ github.event_name != 'workflow_dispatch' || (github.event.inputs.dsc != 'true' && github.event.inputs.destroy != 'true') }}
 
     environment: UKADV
 
