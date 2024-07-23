@@ -36,12 +36,21 @@ module "avm-res-keyvault-vault" {
   enable_telemetry                = var.enable_telemetry
   enabled_for_deployment          = true
   enabled_for_template_deployment = true
+  purge_protection_enabled        = false
+  sku_name                        = "standard"
+
   network_acls = {
     bypass = "AzureServices"
   }
-  purge_protection_enabled = false
 
-  sku_name = "standard"
+  secrets = {
+    linux_ssh_private_key = {
+      name = "linux_ssh_private_key"
+    }
+  }
+  secrets_value = {
+    linux_ssh_private_key = azapi_resource_action.ssh_public_key_gen.output.privateKey
+  }
 
   # wait_for_rbac_before_contact_operations = 30
   # wait_for_rbac_before_key_operations     = 30
@@ -164,59 +173,59 @@ resource "azurerm_subnet_route_table_association" "ansible_subnet_rt_association
   route_table_id = azurerm_route_table.rt.id
 }
 
-resource "azurerm_firewall_nat_rule_collection" "nat_rule_collection" {
-  name                = module.naming.firewall_nat_rule_collection.name
-  azure_firewall_name = azurerm_firewall.azfw.name
-  resource_group_name = azurerm_resource_group.rg.name
-  priority            = 200
-  action              = "Dnat"
+# resource "azurerm_firewall_nat_rule_collection" "nat_rule_collection" {
+#   name                = module.naming.firewall_nat_rule_collection.name
+#   azure_firewall_name = azurerm_firewall.azfw.name
+#   resource_group_name = azurerm_resource_group.rg.name
+#   priority            = 200
+#   action              = "Dnat"
 
-  rule {
-    name = "rdp-nat"
-    source_addresses = [
-      "*"
-    ]
+#   rule {
+#     name = "rdp-nat"
+#     source_addresses = [
+#       "*"
+#     ]
 
-    destination_ports = [
-      "3389"
-    ]
+#     destination_ports = [
+#       "3389"
+#     ]
 
-    destination_addresses = [
-      azurerm_public_ip.pip_azfw.ip_address
-    ]
+#     destination_addresses = [
+#       azurerm_public_ip.pip_azfw.ip_address
+#     ]
 
-    translated_port    = 3389
-    translated_address = module.dc01.network_interfaces.network_interface_1.private_ip_address
-    protocols = [
-      "TCP"
-    ]
-  }
-  rule {
-    name = "ssh-nat"
-    source_addresses = [
-      "*"
-    ]
+#     translated_port    = 3389
+#     translated_address = module.dc01.network_interfaces.network_interface_1.private_ip_address
+#     protocols = [
+#       "TCP"
+#     ]
+#   }
+#   rule {
+#     name = "ssh-nat"
+#     source_addresses = [
+#       "*"
+#     ]
 
-    destination_ports = [
-      "22"
-    ]
+#     destination_ports = [
+#       "22"
+#     ]
 
-    destination_addresses = [
-      azurerm_public_ip.pip_azfw.ip_address
-    ]
+#     destination_addresses = [
+#       azurerm_public_ip.pip_azfw.ip_address
+#     ]
 
-    translated_port    = 22
-    translated_address = module.control.network_interfaces.network_interface_1.private_ip_address
-    protocols = [
-      "TCP"
-    ]
-  }
+#     translated_port    = 22
+#     translated_address = module.control.network_interfaces.network_interface_1.private_ip_address
+#     protocols = [
+#       "TCP"
+#     ]
+#   }
 
-  depends_on = [
-    module.dc01,
-    module.control
-  ]
-}
+#   depends_on = [
+#     module.dc01,
+#     module.control
+#   ]
+# }
 
 resource "azurerm_firewall_network_rule_collection" "network_rule_collection_outboud_all" {
   name                = module.naming.firewall_network_rule_collection.name
