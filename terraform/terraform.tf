@@ -12,9 +12,9 @@ terraform {
     # random = {
     #   source = "hashicorp/random"
     # }
-    # http = {
-    #   source = "hashicorp/http"
-    # }
+    http = {
+      source = "hashicorp/http"
+    }
     # time = {
     #   source = "hashicorp/time"
     # }
