@@ -14,8 +14,8 @@ module "control" {
 
   admin_ssh_keys = [
     {
-      public_key = tls_private_key.ssh.public_key_openssh
-      username   = "localmgr" #the username must match the admin_username currently.
+      public_key = tls_private_key.ssh.public_key_openssh # if using ecdsa, ecdsa_curve must be >= P256
+      username   = "localmgr"                             # the username must match the admin_username currently.
     }
   ]
 

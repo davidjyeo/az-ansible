@@ -1,12 +1,12 @@
-# resource "tls_private_key" "ssh" {
-#   algorithm   = "ECDSA"
-#   ecdsa_curve = "P224"
-# }
-
 resource "tls_private_key" "ssh" {
-  algorithm   = "RSA"
-  ecdsa_curve = "4096"
+  algorithm   = "ECDSA"
+  ecdsa_curve = "P256"
 }
+
+# resource "tls_private_key" "ssh" {
+#   algorithm   = "RSA"
+#   ecdsa_curve = "4096"
+# }
 
 resource "azurerm_key_vault_secret" "admin_ssh_key" {
   key_vault_id = module.avm-res-keyvault-vault.resource_id
