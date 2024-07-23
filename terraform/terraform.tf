@@ -3,30 +3,30 @@ terraform {
     azurerm = {
       source = "hashicorp/azurerm"
     }
-    # tls = {
-    #   source = "hashicorp/tls"
-    # }
-    # local = {
-    #   source = "hashicorp/local"
-    # }
-    # random = {
-    #   source = "hashicorp/random"
-    # }
+    tls = {
+      source = "hashicorp/tls"
+    }
+    local = {
+      source = "hashicorp/local"
+    }
+    random = {
+      source = "hashicorp/random"
+    }
     http = {
       source = "hashicorp/http"
     }
-    # time = {
-    #   source = "hashicorp/time"
-    # }
+    time = {
+      source = "hashicorp/time"
+    }
     azapi = {
       source = "azure/azapi"
     }
     template = {
       source = "hashicorp/template"
     }
-    # azuread = {
-    #   source = "hashicorp/azuread"
-    # }
+    azuread = {
+      source = "hashicorp/azuread"
+    }
   }
 
   backend "azurerm" {
