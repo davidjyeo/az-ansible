@@ -14,7 +14,7 @@
 # }
 
 resource "tls_private_key" "this" {
-  algorithm = "ECDSA"
+  algorithm   = "ECDSA"
   ecdsa_curve = "P224"
   # rsa_bits  = 4096
 }
@@ -27,4 +27,4 @@ resource "azurerm_key_vault_secret" "admin_ssh_key" {
   depends_on = [
     module.avm_res_keyvault_vault
   ]
-)
+}
