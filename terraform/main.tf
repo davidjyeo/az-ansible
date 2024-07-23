@@ -1,6 +1,13 @@
+# This allows us to randomize the region for the resource group.
+resource "random_integer" "region_index" {
+  max = length(module.regions.regions) - 1
+  min = 0
+}
+
 resource "azurerm_resource_group" "rg" {
   name     = module.naming.resource_group.name
-  location = "UK South"
+  location = module.regions.regions[random_integer.region_index.result].name
+  # location = "UK South"
 
   # tags = local.common.tags
 
@@ -19,6 +26,25 @@ resource "azurerm_user_assigned_identity" "uai" {
   resource_group_name = azurerm_resource_group.rg.name
 
   # tags = local.common.tags
+}
+
+module "avm-res-keyvault-vault" {
+  source                          = "Azure/avm-res-keyvault-vault/azurerm"
+  location                        = azurerm_resource_group.rg.location
+  name                            = module.naming.key_vault.name
+  resource_group_name             = azurerm_resource_group.rg.name
+  tenant_id                       = data.azurerm_client_config.current.tenant_id
+  enable_telemetry                = var.enable_telemetry
+  enabled_for_deployment          = true
+  enabled_for_template_deployment = true
+  network_acls = {
+    bypass = "AzureServices"
+  }
+  purge_protection_enabled = false
+
+  # wait_for_rbac_before_contact_operations = 30
+  # wait_for_rbac_before_key_operations     = 30
+  # wait_for_rbac_before_secret_operations  = 30
 }
 
 resource "azurerm_virtual_network" "azfw_vnet" {
