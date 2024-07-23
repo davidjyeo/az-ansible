@@ -70,14 +70,14 @@ module "control" {
     }
   }
 
-  role_assignments_system_managed_identity = {
-    role_assignment_1 = {
-      scope_resource_id          = module.avm-res-keyvault-vault.resource.id
-      role_definition_id_or_name = "Key Vault Secrets Officer"
-      description                = "Assign the Key Vault Secrets Officer role to the virtual machine's system managed identity"
-      principal_type             = "ServicePrincipal"
-    }
-  }
+  # role_assignments_system_managed_identity = {
+  #   role_assignment_1 = {
+  #     scope_resource_id          = module.avm-res-keyvault-vault.resource.id
+  #     role_definition_id_or_name = "Key Vault Secrets Officer"
+  #     description                = "Assign the Key Vault Secrets Officer role to the virtual machine's system managed identity"
+  #     principal_type             = "ServicePrincipal"
+  #   }
+  # }
 
   # role_assignments = {
   #   role_assignment_2 = {
