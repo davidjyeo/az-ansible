@@ -242,7 +242,7 @@ jobs:
       - name: Upload ADDS DCS Configuration
         run: |
           Install-Module -Name Az.Automation -Force -Scope CurrentUser
-          Import-AzAutomationDscConfiguration -SourcePath ${{ env.TF_WORKING_DIR }} -ResourceGroupName "rg-ans-adv-uks-01" -AutomationAccountName "aa-ans-adv-uks-01" -Published
+          Import-AzAutomationDscConfiguration -SourcePath ${{ env.DSC_CONFIG_DIR }} -ResourceGroupName "rg-ans-adv-uks-01" -AutomationAccountName "aa-ans-adv-uks-01" -Published
 
       # - name: Compile ADDS DCS Configuration
       #   run: |
