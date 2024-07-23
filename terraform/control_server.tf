@@ -3,7 +3,7 @@ module "control" {
   admin_username                     = "localmgr"
   admin_password                     = "Lloyds0fLondon"
   enable_telemetry                   = var.enable_telemetry
-  disable_password_authentication    = false
+  disable_password_authentication    = true
   location                           = azurerm_resource_group.rg.location
   name                               = "control"
   resource_group_name                = azurerm_resource_group.rg.name
