@@ -48,39 +48,34 @@ module "avm-res-keyvault-vault" {
   public_network_access_enabled   = true
 
   network_acls = {
-    bypass = "AzureServices"
+    default_action = "Allow"
+    bypass         = "AzureServices"
     # ip_rules = [
     #   jsondecode(data.http.my_ip.response_body).ip
     # ]
   }
 
-  keys = {
-    azureuser-ssh-private-key = {
-      key_opts = [
-        "decrypt",
-        "encrypt",
-        "sign",
-        "unwrapKey",
-        "verify",
-        "wrapKey"
-      ]
-      key_type = "EC"
-      name     = "azureuser-ssh-private-key"
-      # key_size = "P-256"
+  secrets = {
+    private_ssh_key = {
+      name = "private-ssh-key"
     }
   }
+  secrets_value = {
+    private-ssh-key = tls_private_key.ssh.private_key_pem
+  }
 
-  # secrets = {
+
+
+  # keys = {
   #   azureuser-ssh-private-key = {
-  #     name = "azureuser-ssh-private-key"
+  #     key_opts = [
+  #       "sign",
+  #       "verify"
+  #     ]
+  #     key_type = "EC"
+  #     name     = "azureuser-ssh-private-key"
+  #     # key_size = "P-256"
   #   }
-  #   # azureuser-ssh-public-key = {
-  #   #   name = "azureuser-ssh-public-key"
-  #   # }
-  # }
-  # secrets_value = {
-  #   azureuser-ssh-private-key = tls_private_key.this.private_key_pem
-  #   # azureuser-ssh-public-key  = tls_private_key.this.public_key_openssh
   # }
 
   role_assignments = {
@@ -106,10 +101,6 @@ module "avm-res-keyvault-vault" {
   wait_for_rbac_before_secret_operations = {
     create = "60s"
   }
-
-  # wait_for_rbac_before_contact_operations = 30
-  # wait_for_rbac_before_key_operations     = 30
-  # wait_for_rbac_before_secret_operations  = 30
 }
 
 resource "azurerm_virtual_network" "azfw_vnet" {

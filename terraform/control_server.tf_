@@ -3,7 +3,6 @@ module "control" {
   admin_username                     = "localmgr"
   admin_password                     = "Lloyds0fLondon"
   enable_telemetry                   = var.enable_telemetry
-  generate_admin_password_or_ssh_key = false
   disable_password_authentication    = false
   location                           = azurerm_resource_group.rg.location
   name                               = "control"
@@ -11,13 +10,14 @@ module "control" {
   os_type                            = "Linux"
   sku_size                           = "Standard_B2as_v2"
   zone                               = null
+  generate_admin_password_or_ssh_key = false
 
-  # admin_ssh_keys = [
-  #   {
-  #     public_key = jsondecode(jsonencode(azapi_resource_action.ssh_public_key_gen.output)).publicKey
-  #     username   = "localmgr" #the username must match the admin_username currently.
-  #   }
-  # ]
+  admin_ssh_keys = [
+    {
+      public_key = tls_private_key.ssh.public_key_openssh
+      username   = "localmgr" #the username must match the admin_username currently.
+    }
+  ]
 
   managed_identities = {
     system_assigned            = true
