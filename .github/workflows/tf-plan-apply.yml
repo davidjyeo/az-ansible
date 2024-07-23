@@ -150,6 +150,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Download the tfplan artifact
+      - name: Download Terraform Plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: ${{ env.TF_WORKING_DIR }}
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
