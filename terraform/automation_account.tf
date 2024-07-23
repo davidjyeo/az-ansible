@@ -31,5 +31,5 @@ resource "azurerm_automation_dsc_configuration" "domain" {
   resource_group_name     = azurerm_resource_group.rg.name
   automation_account_name = azurerm_automation_account.aa.name
   location                = azurerm_resource_group.rg.location
-  content_embedded        = file("../scripts/dc01.ps1")
+  content_embedded        = file("scripts/dc01.ps1")
 }
