@@ -52,6 +52,16 @@ module "avm-res-keyvault-vault" {
     linux-ssh-private-key = azapi_resource_action.ssh_public_key_gen.output.privateKey
   }
 
+  role_assignments = {
+    deployment_user_kv_admin = {
+      role_definition_id_or_name = "Key Vault Administrator"
+      principal_id               = data.azurerm_client_config.current.object_id
+    }
+  }
+  wait_for_rbac_before_secret_operations = {
+    create = "60s"
+  }
+
   # wait_for_rbac_before_contact_operations = 30
   # wait_for_rbac_before_key_operations     = 30
   # wait_for_rbac_before_secret_operations  = 30
