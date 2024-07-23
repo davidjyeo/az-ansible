@@ -14,8 +14,8 @@ module "control" {
 
   admin_ssh_keys = [
     {
-      public_key = tls_private_key.ssh.public_key_pem #openssh
-      username   = "localmgr"                         #the username must match the admin_username currently.
+      public_key = tls_private_key.ssh.openssh #public_key_pem #
+      username   = "localmgr"                  #the username must match the admin_username currently.
     }
   ]
 
@@ -45,7 +45,6 @@ module "control" {
     caching              = "ReadWrite"
     storage_account_type = "StandardSSD_LRS"
     name                 = "dsk-control-osDisk"
-
   }
 
   data_disk_managed_disks = {
