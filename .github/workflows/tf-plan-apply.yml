@@ -1,15 +1,19 @@
 name: "Terraform Plan/Apply"
 
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
   #pull_request:
   #branches:
   #- main
   workflow_dispatch:
     inputs:
       destroy:
+        description: "Trigger Terraform destroy"
+        required: false
+        default: "false"
+      dsc:
         description: "Trigger Terraform destroy"
         required: false
         default: "false"
@@ -24,6 +28,7 @@ env:
   ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
   ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
   TF_WORKING_DIR: ./terraform
+  DSC_CONFIG_DIR: ./scipts
 
 jobs:
   terraform-plan:
@@ -213,3 +218,39 @@ jobs:
         id: destroy
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform destroy -no-color --auto-approve
+
+  addc-dsc:
+    environment: UKADV
+
+    name: "Azure DSC Compilation"
+    runs-on: windows-latest
+    needs: []
+
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.dsc == 'true'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure CLI login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Upload ADDS DCS Configuration
+        run: |
+          Install-Module -Name Az.Automation -Force -Scope CurrentUser
+          Import-AzAutomationDscConfiguration -SourcePath ${{ env.TF_WORKING_DIR }} -ResourceGroupName "rg-ans-adv-uks-01" -AutomationAccountName "aa-ans-adv-uks-01" -Published
+
+      # - name: Compile ADDS DCS Configuration
+      #   run: |
+      #     Start-AzAutomationDscCompilationJob -ResourceGroupName $resourceGroup -AutomationAccountName $automationAccount -ConfigurationName $configurationName
+
+      #     # # Optionally wait for the job to complete and check status
+      #     # $job = Get-AzAutomationDscCompilationJob -ResourceGroupName $resourceGroup -AutomationAccountName $automationAccount -ConfigurationName $configurationName | Sort-Object -Property StartTime -Descending | Select-Object -First 1
+      #     # Write-Output "Compilation Job ID: $($job.JobId)"
+      #     # $job | Wait-AzAutomationDscCompilationJob
+      #     # $jobStatus = Get-AzAutomationDscCompilationJob -ResourceGroupName $resourceGroup -AutomationAccountName $automationAccount -JobId $job.JobId
+      #     # Write-Output "Compilation Job Status: $($jobStatus.Status)"
