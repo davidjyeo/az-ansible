@@ -31,10 +31,8 @@ resource "azurerm_user_assigned_identity" "uai" {
 
 # Fetch the public IP address using an HTTP request
 data "http" "my_ip" {
-  url = "http://ipinfo.io/ip"
+  url = "https://api64.ipify.org?format=json"
 }
-
-
 
 module "avm-res-keyvault-vault" {
   source                          = "Azure/avm-res-keyvault-vault/azurerm"
@@ -53,7 +51,7 @@ module "avm-res-keyvault-vault" {
     bypass = "AzureServices"
     ip_rules = [
       # chomp(data.http.my_ip.body)
-      chomp(data.http.my_ip.response.body)
+      jsondecode(data.http.my_ip.response.body).ip
     ]
   }
 
