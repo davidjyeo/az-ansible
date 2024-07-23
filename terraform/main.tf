@@ -43,18 +43,34 @@ module "avm-res-keyvault-vault" {
     bypass = "AzureServices"
   }
 
-  secrets = {
+  keys = {
     azureuser-ssh-private-key = {
-      name = "azureuser-ssh-private-key"
+      key_opts = [
+        "decrypt",
+        "encrypt",
+        "sign",
+        "unwrapKey",
+        "verify",
+        "wrapKey"
+      ]
+      key_type = "EC"
+      name     = "azureuser-ssh-private-key"
+      key_size = "P-256"
     }
-    # azureuser-ssh-public-key = {
-    #   name = "azureuser-ssh-public-key"
-    # }
   }
-  secrets_value = {
-    azureuser-ssh-private-key = tls_private_key.this.private_key_pem
-    # azureuser-ssh-public-key  = tls_private_key.this.public_key_openssh
-  }
+
+  # secrets = {
+  #   azureuser-ssh-private-key = {
+  #     name = "azureuser-ssh-private-key"
+  #   }
+  #   # azureuser-ssh-public-key = {
+  #   #   name = "azureuser-ssh-public-key"
+  #   # }
+  # }
+  # secrets_value = {
+  #   azureuser-ssh-private-key = tls_private_key.this.private_key_pem
+  #   # azureuser-ssh-public-key  = tls_private_key.this.public_key_openssh
+  # }
 
   role_assignments = {
     deployment_user_secrets = { #give the deployment user access to secrets
@@ -67,7 +83,7 @@ module "avm-res-keyvault-vault" {
     }
     user_managed_identity_keys = { #give the user assigned managed identity for the disk encryption set access to keys
       role_definition_id_or_name = "Key Vault Crypto Officer"
-      principal_id               = azurerm_user_assigned_identity.example_identity.principal_id
+      principal_id               = azurerm_user_assigned_identity.uai.principal_id
       principal_type             = "ServicePrincipal"
     }
   }
