@@ -43,7 +43,7 @@ module "avm-res-keyvault-vault" {
   enable_telemetry                = var.enable_telemetry
   enabled_for_deployment          = true
   enabled_for_template_deployment = true
-  purge_protection_enabled        = false
+  purge_protection_enabled        = true
   sku_name                        = "standard"
   public_network_access_enabled   = false
 
