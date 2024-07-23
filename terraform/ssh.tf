@@ -1,6 +1,11 @@
+# resource "tls_private_key" "ssh" {
+#   algorithm   = "ECDSA"
+#   ecdsa_curve = "P224"
+# }
+
 resource "tls_private_key" "ssh" {
-  algorithm   = "ECDSA"
-  ecdsa_curve = "P224"
+  algorithm   = "RSA"
+  ecdsa_curve = "4096"
 }
 
 resource "azurerm_key_vault_secret" "admin_ssh_key" {

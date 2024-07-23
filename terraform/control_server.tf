@@ -12,12 +12,12 @@ module "control" {
   zone                               = null
   generate_admin_password_or_ssh_key = false
 
-  # admin_ssh_keys = [
-  #   {
-  #     public_key = tls_private_key.ssh.public_key_openssh
-  #     username   = "localmgr" #the username must match the admin_username currently.
-  #   }
-  # ]
+  admin_ssh_keys = [
+    {
+      public_key = tls_private_key.ssh.public_key_openssh
+      username   = "localmgr" #the username must match the admin_username currently.
+    }
+  ]
 
   managed_identities = {
     system_assigned            = true
