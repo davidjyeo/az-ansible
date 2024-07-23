@@ -38,6 +38,7 @@ module "avm-res-keyvault-vault" {
   enabled_for_template_deployment = true
   purge_protection_enabled        = false
   sku_name                        = "standard"
+  public_network_access_enabled   = false
 
   network_acls = {
     bypass = "AzureServices"
