@@ -14,7 +14,7 @@ resource "azurerm_automation_account" "aa" {
 
 # ActiveDirectoryDsc
 resource "azurerm_automation_module" "example" {
-  name                    = "xActiveDirectory"
+  name                    = "ActiveDirectoryDsc"
   resource_group_name     = azurerm_resource_group.rg.name
   automation_account_name = azurerm_automation_account.aa.name
 
@@ -22,9 +22,6 @@ resource "azurerm_automation_module" "example" {
     uri = "https://psg-prod-eastus.azureedge.net/packages/activedirectorydsc.6.5.0.nupkg"
   }
 }
-
-
-
 
 resource "azurerm_automation_dsc_configuration" "domain" {
   name                    = "domain_controller"

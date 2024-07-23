@@ -1,4 +1,4 @@
-Configuration DC1
+Configuration DC01
 {
   $domainCred = Get-AutomationPSCredential -Name "DomainAdmin"
   $domainName = Get-AutomationVariable -Name "ansible"
