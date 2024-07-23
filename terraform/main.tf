@@ -44,12 +44,12 @@ module "avm-res-keyvault-vault" {
   }
 
   secrets = {
-    linux_ssh_private_key = {
-      name = "linux_ssh_private_key"
+    linux-ssh-private-key = {
+      name = "linux-ssh-private-key"
     }
   }
   secrets_value = {
-    linux_ssh_private_key = azapi_resource_action.ssh_public_key_gen.output.privateKey
+    linux-ssh-private-key = azapi_resource_action.ssh_public_key_gen.output.privateKey
   }
 
   # wait_for_rbac_before_contact_operations = 30
