@@ -10,7 +10,7 @@ module "dc01" {
   os_type                            = "Windows"
   sku_size                           = "Standard_D2ds_v5"
   zone                               = null
-  # timezone = 
+  timezone                           = "GMT Standard Time"
 
   managed_identities = {
     system_assigned            = true
@@ -40,7 +40,7 @@ module "dc01" {
 
   data_disk_managed_disks = {
     for i in range(2) : format("disk-%02d", i + 1) => {
-      name                       = format("dsk-control-dataDisk-%02d", i + 1)
+      name                       = format("dsk-vmansadvuks01-dataDisk-%02d", i + 1)
       storage_account_type       = var.storage_account_type
       create_option              = "Empty"
       disk_size_gb               = 64

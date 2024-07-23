@@ -6,7 +6,6 @@ resource "tls_private_key" "ssh" {
 module "control" {
   source                             = "Azure/avm-res-compute-virtualmachine/azurerm"
   admin_username                     = "localmgr"
-  admin_password                     = "Lloyds0fLondon"
   enable_telemetry                   = var.enable_telemetry
   disable_password_authentication    = true
   location                           = azurerm_resource_group.rg.location
@@ -15,6 +14,7 @@ module "control" {
   os_type                            = "Linux"
   sku_size                           = "Standard_D2ds_v5"
   zone                               = null
+  timezone                           = "GMT Standard Time"
   generate_admin_password_or_ssh_key = false
 
   admin_ssh_keys = [
