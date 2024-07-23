@@ -8,7 +8,7 @@ module "control" {
   name                               = "control"
   resource_group_name                = azurerm_resource_group.rg.name
   os_type                            = "Linux"
-  sku_size                           = "Standard_B2as_v2"
+  sku_size                           = "Standard_D2ds_v6"
   zone                               = null
   generate_admin_password_or_ssh_key = false
 
@@ -31,8 +31,7 @@ module "control" {
       accelerated_networking_enabled = true
       ip_configurations = {
         ip_configuration_1 = {
-          name = "nic-control-ipconfig"
-
+          name                          = "nic-control-ipconfig"
           private_ip_subnet_resource_id = azurerm_subnet.ansible_subnet.id
           private_ip_address_allocation = "Static"
           private_ip_address            = cidrhost(azurerm_subnet.ansible_subnet.address_prefixes[0], 4)
@@ -45,13 +44,11 @@ module "control" {
     caching              = "ReadWrite"
     storage_account_type = "StandardSSD_LRS"
     name                 = "dsk-control-osDisk"
-
   }
 
   data_disk_managed_disks = {
     for i in range(0) : format("disk-%02d", i + 1) => {
-      name = format("dsk-control-dataDisk-%02d", i + 1)
-
+      name                 = format("dsk-control-dataDisk-%02d", i + 1)
       storage_account_type = "StandardSSD_LRS"
       create_option        = "Empty"
       disk_size_gb         = 64
@@ -107,8 +104,8 @@ module "control" {
 
   source_image_reference = {
     publisher = "Canonical"
-    offer     = "ubuntu-24_04-lts" #"0001-com-ubuntu-server-mantic"
-    sku       = "server"           #"23_10-gen2"
+    offer     = "ubuntu-24_04-lts"
+    sku       = "server"
     version   = "latest"
   }
 
