@@ -1,3 +1,5 @@
+### grant Key Vault Data Access Administrator to the SPN
+
 # This allows us to randomize the region for the resource group.
 # resource "random_integer" "region_index" {
 #   max = length(module.regions.regions) - 1
@@ -27,6 +29,13 @@ resource "azurerm_user_assigned_identity" "uai" {
   # tags = local.common.tags
 }
 
+# Fetch the public IP address using an HTTP request
+data "http" "my_ip" {
+  url = "http://ipinfo.io/ip"
+}
+
+
+
 module "avm-res-keyvault-vault" {
   source                          = "Azure/avm-res-keyvault-vault/azurerm"
   location                        = azurerm_resource_group.rg.location
@@ -42,6 +51,9 @@ module "avm-res-keyvault-vault" {
 
   network_acls = {
     bypass = "AzureServices"
+    ip_rules = [
+      chomp(data.http.my_ip.body)
+    ]
   }
 
   keys = {
