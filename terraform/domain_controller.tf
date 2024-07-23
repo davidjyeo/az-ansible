@@ -10,6 +10,7 @@ module "dc01" {
   os_type                            = "Windows"
   sku_size                           = "Standard_D2ds_v5"
   zone                               = null
+  # timezone = 
 
   managed_identities = {
     system_assigned            = true
@@ -48,7 +49,7 @@ module "dc01" {
       lun     = i
       caching = "ReadWrite"
     }
-  }}
+  }
 
   shutdown_schedules = {
     standard_schedule = {
@@ -83,7 +84,7 @@ module "dc01" {
     publisher = "MicrosoftWindowsServer"
     offer     = "WindowsServer"
     sku       = "2022-datacenter-smalldisk-g2"
-    version = "latest"
+    version   = "latest"
   }
 
   # tags = local.common.tags
