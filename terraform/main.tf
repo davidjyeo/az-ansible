@@ -146,26 +146,26 @@ resource "azurerm_firewall_nat_rule_collection" "nat_rule_collection" {
   priority            = 200
   action              = "Dnat"
 
-  # rule {
-  #   name = "rdp-nat"
-  #   source_addresses = [
-  #     "*"
-  #   ]
+  rule {
+    name = "rdp-nat"
+    source_addresses = [
+      "*"
+    ]
 
-  #   destination_ports = [
-  #     "3389"
-  #   ]
+    destination_ports = [
+      "3389"
+    ]
 
-  #   destination_addresses = [
-  #     azurerm_public_ip.pip_azfw.ip_address
-  #   ]
+    destination_addresses = [
+      azurerm_public_ip.pip_azfw.ip_address
+    ]
 
-  #   translated_port    = 3389
-  #   translated_address = module.dc01.network_interfaces.network_interface_1.private_ip_address
-  #   protocols = [
-  #     "TCP"
-  #   ]
-  # }
+    translated_port    = 3389
+    translated_address = module.dc01.network_interfaces.network_interface_1.private_ip_address
+    protocols = [
+      "TCP"
+    ]
+  }
   rule {
     name = "ssh-nat"
     source_addresses = [
@@ -188,7 +188,7 @@ resource "azurerm_firewall_nat_rule_collection" "nat_rule_collection" {
   }
 
   depends_on = [
-    # module.dc01,
+    module.dc01,
     module.control
   ]
 }

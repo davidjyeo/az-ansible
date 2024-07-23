@@ -1,3 +1,8 @@
+resource "tls_private_key" "ssh" {
+  algorithm = "RSA"
+  rsa_bits  = "4096"
+}
+
 module "control" {
   source                             = "Azure/avm-res-compute-virtualmachine/azurerm"
   admin_username                     = "localmgr"
@@ -42,18 +47,18 @@ module "control" {
 
   os_disk = {
     caching              = "ReadWrite"
-    storage_account_type = "StandardSSD_LRS"
+    storage_account_type = var.storage_account_type
     name                 = "dsk-control-osDisk"
   }
 
   data_disk_managed_disks = {
     for i in range(0) : format("disk-%02d", i + 1) => {
-      name                 = format("dsk-control-dataDisk-%02d", i + 1)
-      storage_account_type = "StandardSSD_LRS"
-      create_option        = "Empty"
-      disk_size_gb         = 64
-      # on_demand_bursting_enabled = var.TF_STORAGE_ACCOUNT_TYPE == "Premium_LRS" ? true : false
-      # performance_plus_enabled = true
+      name                       = format("dsk-control-dataDisk-%02d", i + 1)
+      storage_account_type       = var.storage_account_type
+      create_option              = "Empty"
+      disk_size_gb               = 64
+      on_demand_bursting_enabled = var.storage_account_type == "Premium_LRS" ? true : false
+      # performance_plus_enabled   = true
       lun     = i
       caching = "ReadWrite"
     }
@@ -118,8 +123,4 @@ module "control" {
 
   # tags = local.common.tags
 
-
-  # depends_on = [
-  #   azurerm_key_vault_secret.admin_ssh_key
-  # ]
 }

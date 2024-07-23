@@ -8,7 +8,7 @@ module "dc01" {
   name                               = "vmansadvuks01"
   resource_group_name                = azurerm_resource_group.rg.name
   os_type                            = "Windows"
-  sku_size                           = "Standard_B2as_v2"
+  sku_size                           = "Standard_D2ds_v5"
   zone                               = null
 
   managed_identities = {
@@ -33,22 +33,22 @@ module "dc01" {
 
   os_disk = {
     caching              = "ReadWrite"
-    storage_account_type = "StandardSSD_LRS"
+    storage_account_type = var.storage_account_type
     name                 = "dsk-vmansadvuks01-osDisk"
   }
 
   data_disk_managed_disks = {
-    for i in range(2) : format("dsk-%02d", i + 1) => {
-      name                 = format("dsk-vmansadvuks01-dataDisk-%02d", i + 1)
-      storage_account_type = "StandardSSD_LRS"
-      create_option        = "Empty"
-      disk_size_gb         = 64
-      # on_demand_bursting_enabled = var.TF_STORAGE_ACCOUNT_TYPE == "Premium_LRS" ? true : false
-      # performance_plus_enabled = true
+    for i in range(2) : format("disk-%02d", i + 1) => {
+      name                       = format("dsk-control-dataDisk-%02d", i + 1)
+      storage_account_type       = var.storage_account_type
+      create_option              = "Empty"
+      disk_size_gb               = 64
+      on_demand_bursting_enabled = var.storage_account_type == "Premium_LRS" ? true : false
+      # performance_plus_enabled   = true
       lun     = i
       caching = "ReadWrite"
     }
-  }
+  }}
 
   shutdown_schedules = {
     standard_schedule = {
@@ -83,9 +83,6 @@ module "dc01" {
     publisher = "MicrosoftWindowsServer"
     offer     = "WindowsServer"
     sku       = "2022-datacenter-smalldisk-g2"
-    # publisher = "MicrosoftWindowsDesktop"
-    # offer     = "Windows-11"
-    # sku       = "win11-23h2-ent"
     version = "latest"
   }
 

@@ -25,13 +25,13 @@ module "avm-res-keyvault-vault" {
   }
 
   secrets = {
-    azureuser-ssh-private-key = {
-      name = "azureuser-ssh-private-key"
+    ssh-private-key = {
+      name = "ssh-private-key"
     }
   }
 
   secrets_value = {
-    azureuser-ssh-private-key = tls_private_key.ssh.private_key_pem
+    ssh-private-key = tls_private_key.ssh.private_key_pem
   }
 
   role_assignments = {
