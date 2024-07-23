@@ -8,7 +8,7 @@ module "control" {
   name                               = "control"
   resource_group_name                = azurerm_resource_group.rg.name
   os_type                            = "Linux"
-  sku_size                           = "Standard_D2ds_v6"
+  sku_size                           = "Standard_D2ds_v5"
   zone                               = null
   generate_admin_password_or_ssh_key = false
 
