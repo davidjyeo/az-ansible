@@ -118,4 +118,8 @@ module "control" {
 
   # tags = local.common.tags
 
+
+  depends_on = [
+    azurerm_key_vault_secret.admin_ssh_key
+  ]
 }
