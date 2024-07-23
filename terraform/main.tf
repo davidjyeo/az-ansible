@@ -55,7 +55,7 @@ module "avm-res-keyvault-vault" {
       ]
       key_type = "EC"
       name     = "azureuser-ssh-private-key"
-      key_size = "P-256"
+      # key_size = "P-256"
     }
   }
 
