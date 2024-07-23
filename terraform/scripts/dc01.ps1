@@ -1,4 +1,4 @@
-Configuration DC01
+Configuration dc01
 {
   $domainCred = Get-AutomationPSCredential -Name "DomainAdmin"
   $domainName = Get-AutomationVariable -Name "ansible"
@@ -9,7 +9,7 @@ Configuration DC01
   Import-DScResource -ModuleName 'ComputerManagementDsc'
   Import-DscResource -ModuleName 'ActiveDirectoryDsc'	
 
-  Node "Localhost"
+  Node "localhost"
   {
     WindowsFeature ADDSInstall {
       Ensure    = "Present"
