@@ -121,5 +121,5 @@ module "control" {
 
   # depends_on = [
   #   azurerm_key_vault_secret.admin_ssh_key
-  ]
+  # ]
 }
