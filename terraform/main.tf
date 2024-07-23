@@ -52,7 +52,8 @@ module "avm-res-keyvault-vault" {
   network_acls = {
     bypass = "AzureServices"
     ip_rules = [
-      chomp(data.http.my_ip.body)
+      # chomp(data.http.my_ip.body)
+      chomp(data.http.my_ip.response.body)
     ]
   }
 
