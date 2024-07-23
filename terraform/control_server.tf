@@ -26,8 +26,8 @@ module "control" {
 
   network_interfaces = {
     network_interface_1 = {
-      name                           = "nic-control"
-      allow_forwarded_traffic        = false
+      name = "nic-control"
+      # allow_forwarded_traffic        = false
       accelerated_networking_enabled = true
       ip_configurations = {
         ip_configuration_1 = {
