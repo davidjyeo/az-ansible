@@ -17,8 +17,6 @@ Configuration dc01
     $SafeModePassword
   )
   
-  
-  
   # Import the modules needed to run the DSC script
   Import-DscResource -ModuleName PSDesiredStateConfiguration
   Import-DScResource -ModuleName ComputerManagementDsc

@@ -12,10 +12,10 @@ resource "azurerm_automation_account" "aa" {
   }
 }
 
-resource "azurerm_automation_credential" "example" {
+resource "azurerm_automation_credential" "cred" {
   name                    = "localmgr"
-  resource_group_name     = azurerm_resource_group.example.name
-  automation_account_name = azurerm_automation_account.example.name
+  resource_group_name     = azurerm_resource_group.rg.name
+  automation_account_name = azurerm_automation_account.aa.name
   username                = "localmgr"
   password                = "1QAZ2wsx3edc"
   description             = "This is an example credential for the domain setup"
