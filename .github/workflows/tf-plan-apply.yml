@@ -60,17 +60,6 @@ jobs:
         with:
           terraform_wrapper: false
 
-      # - name: Cache Terraform state and dependencies
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: |
-      #       ${{ env.TF_WORKING_DIR }}/.terraform
-      #       ${{ env.TF_WORKING_DIR }}/.terraform.lock.hcl
-      #       ${{ env.TF_WORKING_DIR }}/tfplan
-      #     key: ${{ runner.os }}-terraform-${{ hashFiles('**/*.tf*') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-terraform-
-
       - name: Terraform Init
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: |
@@ -122,21 +111,21 @@ jobs:
           SUMMARY: ${{ steps.tf-plan-string.outputs.summary }}
         run: echo "$SUMMARY" >> $GITHUB_STEP_SUMMARY
 
-      # - name: Push Terraform Output to PR
-      #   if: github.ref != 'refs/heads/main'
-      #   uses: actions/github-script@v7
-      #   env:
-      #     SUMMARY: "${{ steps.tf-plan-string.outputs.summary }}"
-      #   with:
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
-      #     script: |
-      #       const body = `${process.env.SUMMARY}`;
-      #       github.rest.issues.createComment({
-      #           issue_number: context.issue.number,
-      #           owner: context.repo.owner,
-      #           repo: context.repo.repo,
-      #           body: body
-      #       })
+      - name: Push Terraform Output to PR
+        if: github.ref != 'refs/heads/main'
+        uses: actions/github-script@v7
+        env:
+          SUMMARY: "${{ steps.tf-plan-string.outputs.summary }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const body = `${process.env.SUMMARY}`;
+            github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: body
+            })
 
   terraform-apply:
     environment: UKADV
@@ -166,17 +155,6 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
-
-      # - name: Cache Terraform state and dependencies
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: |
-      #       ${{ env.TF_WORKING_DIR }}/.terraform
-      #       ${{ env.TF_WORKING_DIR }}/.terraform.lock.hcl
-      #       ${{ env.TF_WORKING_DIR }}/tfplan
-      #     key: ${{ runner.os }}-terraform-${{ hashFiles('**/*.tf*') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-terraform-
 
       - name: Terraform Init
         working-directory: ${{ env.TF_WORKING_DIR }}
@@ -243,7 +221,7 @@ jobs:
       - name: Upload ADDS DCS Configuration
         run: |
           Install-Module -Name Az.Automation -Force -Scope CurrentUser
-          Import-AzAutomationDscConfiguration -SourcePath ${{ env.DSC_CONFIG_DIR }}/dc01.ps1 -ResourceGroupName "rg-ans-adv-uks-01" -AutomationAccountName "aa-ans-adv-uks-01" -Published
+          Import-AzAutomationDscConfiguration -SourcePath "${{ env.DSC_CONFIG_DIR }}/dc01.ps1" -ResourceGroupName "rg-ans-adv-uks-01" -AutomationAccountName "aa-ans-adv-uks-01" -Published
 
       # - name: Compile ADDS DCS Configuration
       #   run: |
