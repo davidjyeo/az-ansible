@@ -1,0 +1,126 @@
+### https://docs.ansible.com/ansible/latest/collections/microsoft/ad/ou_module.html#examples
+
+---
+- name: Install AD DS Features and Configure a New Domain
+  hosts: all
+  vars:
+    domain_name: "ansible-poc.local" # Replace with your desired domain name
+    netbios_name: "ansible-poc" # Replace with your desired NetBIOS name
+    forest_mode: "WinThreshold" # Set the forest functional level (e.g., Win2016, Win2012R2, etc.)
+    domain_mode: "WinThreshold" # Set the domain functional level (e.g., Win2016, Win2012R2, etc.)
+    safemode_password: "1QAZ2wsx3edc" # Safe mode administrator password
+    admin_user: "localmgr" # Domain administrator username
+    admin_password: "1QAZ2wsx3edc" # Domain administrator password
+
+  tasks:
+    - name: Run PowerShell script to configure disks
+      ansible.windows.win_powershell:
+        script: |
+          # Define the desired drive letters and volume labels for each disk
+          $diskConfigurations = @(
+            @{ DriveLetter = 'S'; VolumeLabel = 'SYSVOL' },
+            @{ DriveLetter = 'N'; VolumeLabel = 'NTDS' }
+          )
+
+          # Get all raw disks (disks without a partition style)
+          $rawDisks = Get-Disk | Where-Object { $_.PartitionStyle -eq 'RAW' }
+
+          # Check if the number of raw disks matches the configurations
+          if ($rawDisks.Count -ne $diskConfigurations.Count) {
+              Write-Output "Expected exactly $($diskConfigurations.Count) raw disks, found $($rawDisks.Count)."
+              exit 1
+          }
+
+          # Process each RAW disk based on configuration
+          for ($i = 0; $i -lt $diskConfigurations.Count; $i++) {
+              $disk = $rawDisks[$i]
+              $driveLetter = $diskConfigurations[$i].DriveLetter
+              $volumeLabel = $diskConfigurations[$i].VolumeLabel
+              $diskNumber = $disk.Number
+
+              # Initialize the disk if necessary
+              if ($disk.PartitionStyle -eq 'RAW') {
+                  Write-Output "Initializing Disk $diskNumber..."
+                  Initialize-Disk -Number $diskNumber -PartitionStyle GPT -ErrorAction Stop
+              }
+
+              # Check if the disk has any existing partitions
+              $partitions = Get-Partition -DiskNumber $diskNumber -ErrorAction SilentlyContinue
+
+              # Ensure the drive letter is correctly formatted
+              $driveLetter = $driveLetter.ToUpper()
+              
+              # Ensure drive letter is exactly one character
+              if ($driveLetter.Length -ne 1) {
+                  Write-Error "Drive letter '$driveLetter' is not a single character."
+                  exit 1
+              }
+
+              if (-not $partitions) {
+                  # Create a new partition if no partitions exist
+                  Write-Output "Creating partition on Disk $diskNumber with drive letter $driveLetter..."
+                  New-Partition -DiskNumber $diskNumber -UseMaximumSize -DriveLetter $driveLetter -ErrorAction Stop
+              } else {
+                  # Check if the partition with the desired drive letter exists
+                  $partition = $partitions | Where-Object { $_.DriveLetter -eq $driveLetter }
+                  if (-not $partition) {
+                      Write-Output "Creating new partition on Disk $diskNumber with drive letter $driveLetter..."
+                      New-Partition -DiskNumber $diskNumber -UseMaximumSize -DriveLetter $driveLetter -ErrorAction Stop
+                  }
+              }
+
+              # Format the partition
+              Write-Output "Formatting partition $driveLetter on Disk $diskNumber..."
+              Format-Volume -DriveLetter $driveLetter -FileSystem NTFS -Confirm:$false -ErrorAction Stop
+
+              # Set volume label
+              Write-Output "Setting volume label for $driveLetter to $volumeLabel..."
+              $volume = Get-Volume -DriveLetter $driveLetter -ErrorAction Stop
+              Set-Volume -DriveLetter $driveLetter -NewFileSystemLabel $volumeLabel -ErrorAction Stop
+
+              Write-Output "Disk $diskNumber configured with drive letter $driveLetter and volume label $volumeLabel."
+          }
+
+          Write-Output "All RAW disks have been initialized, partitioned, and formatted with their respective labels."
+
+    - name: Install DNS Server and AD DS
+      win_feature:
+        name:
+          - AD-Domain-Services
+        state: present
+
+    - name: Create new domain in a new forest on the target host and reboot
+      microsoft.ad.domain:
+        dns_domain_name: "{{ domain_name }}"
+        safe_mode_password: "{{ safemode_password }}"
+        reboot: true
+
+    - name: Ensure a server is a domain controller
+      microsoft.ad.domain:
+        create_dns_delegation: false
+        database_path: N:\NTDS
+        dns_domain_name: "{{ domain_name }}"
+        domain_mode: "{{ domain_mode }}"
+        domain_netbios_name: "{{ netbios_name }}"
+        forest_mode: "{{ forest_mode }}"
+        safe_mode_password: "{{ safemode_password }}"
+        sysvol_path: S:\SYSVOL
+      register: domain_install
+
+    - name: Reboot host if install requires it
+      ansible.windows.win_reboot:
+      when: domain_install.reboot_required
+
+    - name: Ensure Europe OU is present & protected
+      microsoft.ad.ou:
+        name: Europe
+        path: DC="{{ netbios_name }}",DC=local
+        state: present
+        protect_from_deletion: false
+
+    - name: Ensure UK Users OU is present & protected
+      microsoft.ad.ou:
+        name: UK Users
+        path: OU=Europe,DC="{{ netbios_name }}",DC=local
+        state: present
+        protect_from_deletion: false
