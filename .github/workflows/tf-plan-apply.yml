@@ -220,6 +220,7 @@ jobs:
 
       - name: Upload ADDS DCS Configuration
         run: |
+          Uninstall-AzureRm
           Install-Module -Name Az.Automation -Force -Scope CurrentUser
           Import-AzAutomationDscConfiguration -SourcePath "${{ env.DSC_CONFIG_DIR }}/dc01.ps1" -ResourceGroupName "rg-ans-adv-uks-01" -AutomationAccountName "aa-ans-adv-uks-01" -Published
 
