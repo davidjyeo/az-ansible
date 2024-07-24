@@ -224,7 +224,7 @@ resource "azurerm_firewall_network_rule_collection" "network_rule_collection_out
 resource "azurerm_firewall_policy_rule_collection_group" "rule_collecton" {
   name               = module.naming.firewall_policy_rule_collection_group.name
   firewall_policy_id = azurerm_firewall_policy.azfw.id
-  priority           = 500
+  priority           = 110
   # application_rule_collection {
   #   name     = "app_rule_collection1"
   #   priority = 500
@@ -246,7 +246,7 @@ resource "azurerm_firewall_policy_rule_collection_group" "rule_collecton" {
 
   network_rule_collection {
     name     = module.naming.firewall_network_rule_collection.name
-    priority = 200
+    priority = 120
     action   = "Allow"
     rule {
       name                  = "OutBoundAllAll"
@@ -259,7 +259,7 @@ resource "azurerm_firewall_policy_rule_collection_group" "rule_collecton" {
 
   nat_rule_collection {
     name     = "module.naming.firewall_nat_rule_collection.name"
-    priority = 200
+    priority = 130
     action   = "Dnat"
     rule {
       name                = "rdp-nat"
