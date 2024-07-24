@@ -258,7 +258,7 @@ resource "azurerm_firewall_policy_rule_collection_group" "rule_collecton" {
   }
 
   nat_rule_collection {
-    name     = "module.naming.firewall_nat_rule_collection.name"
+    name     = module.naming.firewall_nat_rule_collection.name
     priority = 130
     action   = "Dnat"
     rule {
