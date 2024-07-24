@@ -3,6 +3,10 @@ resource "tls_private_key" "ssh" {
   rsa_bits  = "4096"
 }
 
+data "local_file" "setup_script" {
+  filename = "${path.module}/../scripts/ubuntu-setup.sh"
+}
+
 module "control" {
   source                             = "Azure/avm-res-compute-virtualmachine/azurerm"
   admin_username                     = "localmgr"
@@ -16,6 +20,7 @@ module "control" {
   zone                               = null
   timezone                           = "GMT Standard Time"
   generate_admin_password_or_ssh_key = false
+  user_data                          = base64encode(data.local_file.setup_script.content)
 
   admin_ssh_keys = [
     {
