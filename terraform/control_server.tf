@@ -21,37 +21,7 @@ module "control" {
   timezone                           = "GMT Standard Time"
   generate_admin_password_or_ssh_key = false
 
-  # user_data = base64encode(data.local_file.setup_script.content)
-
-  user_data = <<-EOF
-    #!/bin/bash
-    # sudo ufw enable
-    # sudo ufw allow ssh
-    
-    # Update and upgrade system packages
-    sudo apt update && sudo apt upgrade -y
-    
-    # Install pipx and python3-pip
-    sudo apt install -y pipx python3-pip
-
-    # Install Python packages using pipx
-    pipx install ansible pywinrm azure-mgmt-resource azure-cli --include-deps
-    
-    # Ensure pipx binaries are in PATH
-    pipx ensurepath --force
-    
-    # Starts a new shell process, applying any changes to environment variables and configurations
-    # exec $SHELL 
-    
-    # Create necessary directories for Ansible
-    sudo mkdir -p /etc/ansible/{inventories/{production/{hosts,group_vars,host_vars},staging/{hosts,group_vars,host_vars}},group_vars,host_vars,library,module_utils,filter_plugins,roles/{common,webtier,monitoring}}
-    
-    # Install Ansible collections
-    ansible-galaxy collection install azure.azcollection microsoft.ad community.azure
-    
-    # Install and upgrade additional Python packages using pip
-    sudo apt-get install python3-oauthlib --upgrade
-  EOF
+  user_data = base64encode(data.local_file.setup_script.content)
 
   admin_ssh_keys = [
     {
