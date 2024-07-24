@@ -20,7 +20,8 @@ module "control" {
   zone                               = null
   timezone                           = "GMT Standard Time"
   generate_admin_password_or_ssh_key = false
-  user_data                          = base64encode(data.local_file.setup_script.content)
+
+  user_data = base64encode(data.local_file.setup_script.content)
 
   admin_ssh_keys = [
     {
