@@ -1,129 +1,55 @@
 Configuration dc01
 {
+  # Retrieve automation variables and credentials
   $domainCred = Get-AutomationPSCredential -Name "localmgr"
-  $domainName = Get-AutomationVariable -Name "ansible-poc"
-  $domainDN = Get-AutomationVariable -Name "DC=ansible-poc,DC=local"
-	
-  param
-  (
-    [Parameter(Mandatory = $true)]
-    [ValidateNotNullOrEmpty()]
-    [System.Management.Automation.PSCredential]
-    $Credential,
+  $domainName = Get-AutomationVariable -Name "DomainName" # Adjust to match your Azure Automation variable name
+  $domainDN = Get-AutomationVariable -Name "DomainDN"     # Adjust to match your Azure Automation variable name
 
-    [Parameter(Mandatory = $true)]
-    [ValidateNotNullOrEmpty()]
-    [System.Management.Automation.PSCredential]
-    $SafeModePassword
-  )
-  
   # Import the modules needed to run the DSC script
   Import-DscResource -ModuleName PSDesiredStateConfiguration
-  Import-DScResource -ModuleName ComputerManagementDsc
+  Import-DscResource -ModuleName ComputerManagementDsc
   Import-DscResource -ModuleName ActiveDirectoryDsc
 
-  Node localhost
-
+  Node 'localhost'
   {
+    # Ensure AD DS is installed
     WindowsFeature ADDS {
       Ensure = "Present"
       Name   = "AD-Domain-Services"
     }
 
+    # Ensure RSAT tools are installed
     WindowsFeature RSAT {
       Ensure = "Present"
-      Name   = "RSAT-ADDS"
+      Name   = "RSAT-AD-AdminCenter"
     }
 
-    WindowsFeature InstallRSAT-AD-PowerShell {
+    # Ensure AD PowerShell module is installed
+    WindowsFeature InstallRSAT_AD_PowerShell {
       Ensure = "Present"
       Name   = "RSAT-AD-PowerShell"
     }
-		
-    ADDomain $domainName {
+
+    # Create and configure the Active Directory Domain
+    ADDomain 'CreateDomain' {
       DomainName                    = $domainName
       Credential                    = $domainCred
-      SafemodeAdministratorPassword = $domainCred
+      SafemodeAdministratorPassword = $SafeModePassword
       ForestMode                    = 'WinThreshold'
-      DependsOn                     = "[WindowsFeature]ADDSInstall"
-    }	
-
-    WaitForADDomain $domainName {
-      DomainName           = $domainName
-      WaitTimeout          = 600
-      RestartCount         = 2
-      PsDscRunAsCredential = $domainCred
+      DatabasePath                  = 'C:\NTDS'
+      LogPath                       = 'C:\NTDS'
+      SysvolPath                    = 'C:\SYSVOL'
+      DependsOn                     = "[WindowsFeature]ADDS"
     }
 
-    # ADOrganizationalUnit 'Demo' {
-    #   Name                            = "Demo"
-    #   Path                            = "$domainDN"
-    #   ProtectedFromAccidentalDeletion = $true
-    #   Description                     = "TopLevel OU"
-    #   Ensure                          = 'Present'
-    # }
-		
-    # ADOrganizationalUnit 'WebServers' {
-    #   Name                            = "WebServers"
-    #   Path                            = "OU=Demo,$domainDN"
-    #   ProtectedFromAccidentalDeletion = $true
-    #   Description                     = "WebServers OU"
-    #   Ensure                          = 'Present'
-    #   DependsOn                       = "[ADOrganizationalUnit]Demo"
-    # }
-
-    # ADOrganizationalUnit 'Administration' {
-    #   Name                            = "Administration"
-    #   Path                            = "OU=Demo,$domainDN"
-    #   ProtectedFromAccidentalDeletion = $true
-    #   Description                     = "Administration OU"
-    #   Ensure                          = 'Present'
-    #   DependsOn                       = "[ADOrganizationalUnit]Demo"
-    # }
-
-    # ADOrganizationalUnit 'AdminUsers' {
-    #   Name                            = "AdminUsers"
-    #   Path                            = "OU=Administration,OU=Demo,$domainDN"
-    #   ProtectedFromAccidentalDeletion = $true
-    #   Description                     = "Administration OU"
-    #   Ensure                          = 'Present'
-    #   DependsOn                       = "[ADOrganizationalUnit]Administration"
-    # }
-
-    # ADOrganizationalUnit 'ServiceAccounts' {
-    #   Name                            = "ServiceAccounts"
-    #   Path                            = "OU=Demo,$domainDN"
-    #   ProtectedFromAccidentalDeletion = $true
-    #   Description                     = "ServiceAccounts OU"
-    #   Ensure                          = 'Present'
-    #   DependsOn                       = "[ADOrganizationalUnit]Demo"
-    # }
-
-    # ADOrganizationalUnit 'Citrix' {
-    #   Name                            = "Citrix"
-    #   Path                            = "OU=Demo,$domainDN"
-    #   ProtectedFromAccidentalDeletion = $true
-    #   Description                     = "Citrix OU"
-    #   Ensure                          = 'Present'
-    #   DependsOn                       = "[ADOrganizationalUnit]Demo"
-    # }		
-    
-    # ADOrganizationalUnit 'Users' {
-    #   Name                            = "Users"
-    #   Path                            = "OU=Demo,$domainDN"
-    #   ProtectedFromAccidentalDeletion = $true
-    #   Description                     = "Users OU"
-    #   Ensure                          = 'Present'
-    #   DependsOn                       = "[ADOrganizationalUnit]Demo"
-    # }
-    
-    # ADOrganizationalUnit 'Servers' {
-    #   Name                            = "Servers"
-    #   Path                            = "OU=Demo,$domainDN"
-    #   ProtectedFromAccidentalDeletion = $true
-    #   Description                     = "Servers OU"
-    #   Ensure                          = 'Present'
-    #   DependsOn                       = "[ADOrganizationalUnit]Demo"
-    # }
+    # Wait for AD domain to be fully created
+    WaitForADDomain 'WaitForDomain' {
+      DomainName           = $domainName
+      WaitTimeout          = 600
+      RetryIntervalSec     = 60
+      PsDscRunAsCredential = $domainCred
+      DependsOn            = "[ADDomain]CreateDomain"
+    }
   }
 }
+
