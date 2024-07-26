@@ -287,13 +287,13 @@ resource "azurerm_firewall_policy_rule_collection_group" "rule_collecton" {
     }
 
     rule {
-      name                = "semaphore"
+      name                = "ansible-awx"
       protocols           = ["TCP"]
       source_addresses    = ["*"]
       destination_address = azurerm_public_ip.pip_azfw.ip_address
-      destination_ports   = ["3000"]
+      destination_ports   = ["30182"]
       translated_address  = module.control.network_interfaces.network_interface_1.private_ip_address
-      translated_port     = "3000"
+      translated_port     = "30182"
     }
 
   }
