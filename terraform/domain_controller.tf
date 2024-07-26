@@ -87,5 +87,9 @@ module "dc01" {
     version   = "latest"
   }
 
-  # tags = local.common.tags
+  tags = {
+    applicationRole = "ADDS"
+    # department = "finance"
+    # source = "terraform"
+  }
 }

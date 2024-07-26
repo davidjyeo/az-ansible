@@ -266,5 +266,15 @@ resource "azurerm_firewall_policy_rule_collection_group" "rule_collecton" {
       translated_port     = "22"
     }
 
+    rule {
+      name                = "semaphore"
+      protocols           = ["TCP"]
+      source_addresses    = ["*"]
+      destination_address = azurerm_public_ip.pip_azfw.ip_address
+      destination_ports   = ["3000"]
+      translated_address  = module.control.network_interfaces.network_interface_1.private_ip_address
+      translated_port     = "3000"
+    }
+
   }
 }
