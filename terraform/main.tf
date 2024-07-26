@@ -186,6 +186,26 @@ resource "azurerm_firewall_nat_rule_collection" "nat_rule_collection" {
       "TCP"
     ]
   }
+  rule {
+    name = "semaphore"
+    source_addresses = [
+      "*"
+    ]
+
+    destination_ports = [
+      "3000"
+    ]
+
+    destination_addresses = [
+      azurerm_public_ip.pip_azfw.ip_address
+    ]
+
+    translated_port    = 3000
+    translated_address = module.control.network_interfaces.network_interface_1.private_ip_address
+    protocols = [
+      "TCP"
+    ]
+  }
 
   depends_on = [
     module.dc01,
