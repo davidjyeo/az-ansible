@@ -16,7 +16,7 @@ module "avm-res-containerinstance-containergroup" {
   restart_policy   = "Always"
   enable_telemetry = var.enable_telemetry
 
-  subnet_ids = [azurerm_subnet.ansible_subnet.id]
+  subnet_ids = [azurerm_subnet.container_subnet.id]
 
   containers = {
     container1 = {
