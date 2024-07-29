@@ -1,7 +1,7 @@
 resource "azurerm_container_registry" "acr" {
   resource_group_name = azurerm_resource_group.rg.name
   name                = replace("${module.naming.container_registry.name}", "/-/", "")
-  location            = azurerm_resource_group.rge.location
+  location            = azurerm_resource_group.rg.location
   sku                 = "Standard"
   admin_enabled       = true
   # georeplications {
