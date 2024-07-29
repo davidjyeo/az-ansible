@@ -35,18 +35,14 @@ resource "azurerm_container_group" "aci" {
 
   container {
     name   = "hello-world"
-    image  = "mcr.microsoft.com/azuredocs/aci-helloworld:latest"
-    cpu    = "0.5"
-    memory = "1.5"
+    image  = "ubuntu:latest"
+    cpu    = "1.0"
+    memory = "2.0"
 
     ports {
-      port     = 443
+      port     = 22
       protocol = "TCP"
     }
-  }
-
-  tags = {
-    environment = "testing"
   }
 }
 
