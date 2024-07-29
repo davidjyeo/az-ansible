@@ -33,14 +33,14 @@ module "avm-res-containerinstance-containergroup" {
       # secure_environment_variables = {
       #   "SECENV" = "avmpoc"
       # }
-      # volumes = {
-      #   secrets = {
-      #     mount_path = "/etc/secrets"
-      #     name       = "secret1"
-      #     secret = {
-      #       "password" = base64encode("password123")
-      #     }
-      #   },
+      volumes = {
+        secrets = {
+          mount_path = "/etc/secrets"
+          name       = "secret1"
+          secret = {
+            "password" = base64encode("password123")
+          }
+        }
       #   nginx = {
       #     mount_path = "/usr/share/nginx/html"
       #     name       = "nginx"
