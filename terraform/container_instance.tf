@@ -21,7 +21,7 @@ module "avm-res-containerinstance-containergroup" {
   containers = {
     container1 = {
       name   = "control"
-      image  = "ubuntu:latest"
+      image  = "ubuntu" #:latest"
       cpu    = "1"
       memory = "2"
       ports = [
