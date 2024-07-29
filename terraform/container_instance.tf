@@ -41,14 +41,14 @@ module "avm-res-containerinstance-containergroup" {
             "password" = base64encode("password123")
           }
         }
-      #   nginx = {
-      #     mount_path = "/usr/share/nginx/html"
-      #     name       = "nginx"
-      #     secret = {
-      #       "indexpage" = base64encode("Hello, World!")
-      #     }
-      #   }
-      # }
+        #   nginx = {
+        #     mount_path = "/usr/share/nginx/html"
+        #     name       = "nginx"
+        #     secret = {
+        #       "indexpage" = base64encode("Hello, World!")
+        #     }
+        #   }
+      }
     }
   }
 }
