@@ -32,7 +32,6 @@ jobs:
     name: "Terraform Plan"
     runs-on: ubuntu-latest
     if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.destroy != 'true' }}
-    # if: ${{ github.event_name != 'workflow_dispatch' || (github.event.inputs.dsc != 'true' && github.event.inputs.destroy != 'true') }}
 
     environment: UKADV
 
@@ -127,7 +126,9 @@ jobs:
   terraform-apply:
     name: "Terraform Apply"
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && needs.terraform-plan.outputs.tfplanExitCode == 2
+    # if: github.ref == 'refs/heads/main' && needs.terraform-plan.outputs.tfplanExitCode == 2
+    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/build/docker') && needs.terraform-plan.outputs.tfplanExitCode == '2'
+
     environment: UKADV
     needs: [terraform-plan]
 
