@@ -69,35 +69,35 @@ sudo mkdir -p /etc/ansible/{inventories/{production,staging}/{hosts,group_vars,h
 # Install Python packages using pipx
 pipx install pywinrm azure-mgmt-resource azure-identity --include-deps
 
-# Download and install Minikube
-curl -LO $MINIKUBE_URL
-sudo install minikube-linux-amd64 /usr/local/bin/minikube
-rm minikube-linux-amd64
+# # Download and install Minikube
+# curl -LO $MINIKUBE_URL
+# sudo install minikube-linux-amd64 /usr/local/bin/minikube
+# rm minikube-linux-amd64
 
-# Add the current user to the Docker group and activate it
-sudo usermod -aG docker $USER
-newgrp docker
+# # Add the current user to the Docker group and activate it
+# sudo usermod -aG docker $USER
+# newgrp docker
 
-# Start Minikube with Docker driver and enable the ingress addon
-minikube start --vm-driver=docker --addons=ingress
+# # Start Minikube with Docker driver and enable the ingress addon
+# minikube start --vm-driver=docker --addons=ingress
 
-# Download and install kubectl
-curl -LO $KUBECTL_URL
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+# # Download and install kubectl
+# curl -LO $KUBECTL_URL
+# sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
-# Clone the AWX Operator repository and checkout the desired version
-git clone $AWX_OPERATOR_REPO
-cd awx-operator/
-git checkout 2.16.1 # Or the latest version
+# # Clone the AWX Operator repository and checkout the desired version
+# git clone $AWX_OPERATOR_REPO
+# cd awx-operator/
+# git checkout 2.16.1 # Or the latest version
 
-# Deploy AWX Operator
-export NAMESPACE
-make deploy
+# # Deploy AWX Operator
+# export NAMESPACE
+# make deploy
 
-# Deploy the AWX demo application
-kubectl create -f awx-demo.yml -n $NAMESPACE
+# # Deploy the AWX demo application
+# kubectl create -f awx-demo.yml -n $NAMESPACE
 
-# Access the AWX demo service
-MINIKUBE_SERVICE_URL=$(minikube service awx-demo-service --url -n $NAMESPACE)
-echo "AWX demo service URL: $MINIKUBE_SERVICE_URL"
-kubectl port-forward service/awx-demo-service -n $NAMESPACE --address 0.0.0.0 10445:80 &
+# # Access the AWX demo service
+# MINIKUBE_SERVICE_URL=$(minikube service awx-demo-service --url -n $NAMESPACE)
+# echo "AWX demo service URL: $MINIKUBE_SERVICE_URL"
+# kubectl port-forward service/awx-demo-service -n $NAMESPACE --address 0.0.0.0 10445:80 &
